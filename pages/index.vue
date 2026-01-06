@@ -1,224 +1,278 @@
 <template>
-    <div class="min-h-screen flex flex-col">
-      <nav class="bg-white shadow-md p-4 flex justify-between items-center">
-      <div>
-        <img src="/assets/logo.jpg" alt="Store Logo" class="h-10">
-      </div>
-      <ul class="hidden md:flex space-x-6">
-        <li><NuxtLink to="/navpages/" class="hover:text-gray-500">Home</NuxtLink></li>
-        <li><NuxtLink to="/products/" class="hover:text-gray-500">Shop</NuxtLink></li>
-        <li><NuxtLink to="/categories/" class="hover:text-gray-500">Categories</NuxtLink></li>
-        <li><NuxtLink to="/navpages/contactus" class="hover:text-gray-500">Contact Us</NuxtLink></li>
-      </ul>
-      <div class="flex items-center space-x-4">
-        <NuxtLink to="" class="relative hover:text-gray-500">
-          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M7.2998 5H22L20 12H8.37675M21 16H9L7 3H4M4 8H2M5 11H2M6 14H2M10 20C10 20.5523 9.55228 21 9 21C8.44772 21 8 20.5523 8 20C8 19.4477 8.44772 19 9 19C9.55228 19 10 19.4477 10 20ZM21 20C21 20.5523 20.5523 21 20 21C19.4477 21 19 20.5523 19 20C19 19.4477 19.4477 19 20 19C20.5523 19 21 19.4477 21 20Z" 
-            stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-          </svg>
+  <div class="min-h-screen flex flex-col font-sans text-gray-800">
+    <!-- Navbar -->
+    <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-sm border-b border-gray-100">
+      <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <NuxtLink to="/" class="flex items-center gap-2 group">
+           <img src="/assets/logo.jpg" alt="Store Logo" class="h-10 w-auto object-contain group-hover:scale-105 transition-transform duration-300"> 
         </NuxtLink>
-        
-        <!-- Hamburger Icon -->
-        <button @click="menuOpen = !menuOpen" class="md:hidden text-2xl">
-          ☰
+
+        <!-- Desktop Menu -->
+        <ul class="hidden md:flex space-x-8 text-sm font-medium tracking-wide uppercase text-gray-600">
+          <li><NuxtLink to="/navpages/" class="hover:text-black transition-colors">Home</NuxtLink></li>
+          <li><NuxtLink to="/products/" class="hover:text-black transition-colors">Shop</NuxtLink></li>
+          <li><NuxtLink to="/categories/" class="hover:text-black transition-colors">Categories</NuxtLink></li>
+          <li><NuxtLink to="/navpages/contactus" class="hover:text-black transition-colors">Contact</NuxtLink></li>
+        </ul>
+
+        <!-- Icons -->
+        <div class="flex items-center space-x-6">
+          <NuxtLink to="/cart" class="relative group" title="View Cart">
+            <svg class="w-6 h-6 text-gray-700 group-hover:text-black transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            <span v-if="cart.length > 0" class="absolute -top-2 -right-2 bg-black text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+              {{ cart.length }}
+            </span>
+          </NuxtLink>
+          
+          <button @click="menuOpen = !menuOpen" class="md:hidden text-2xl focus:outline-none">
+            <span v-if="!menuOpen">☰</span>
+            <span v-else>✕</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Menu -->
+      <transition name="fade">
+        <ul v-if="menuOpen" class="md:hidden bg-white border-t border-gray-100 p-4 flex flex-col space-y-4 shadow-lg absolute w-full left-0">
+          <li><NuxtLink to="/navpages/" class="block py-2 px-4 hover:bg-gray-50 rounded" @click="menuOpen = false">Home</NuxtLink></li>
+          <li><NuxtLink to="/products/" class="block py-2 px-4 hover:bg-gray-50 rounded" @click="menuOpen = false">Shop</NuxtLink></li>
+          <li><NuxtLink to="/categories/" class="block py-2 px-4 hover:bg-gray-50 rounded" @click="menuOpen = false">Categories</NuxtLink></li>
+          <li><NuxtLink to="/navpages/contactus" class="block py-2 px-4 hover:bg-gray-50 rounded" @click="menuOpen = false">Contact Us</NuxtLink></li>
+        </ul>
+      </transition>
+    </nav>
+
+    <!-- Hero Section with Background Slider -->
+    <section class="relative h-[80vh] flex items-center justify-center overflow-hidden">
+      <!-- Background Images -->
+      <div class="absolute inset-0 w-full h-full">
+        <div v-for="(image, index) in heroImages" :key="index"
+             class="absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-1000 ease-in-out"
+             :style="{ backgroundImage: `url(${image})`, opacity: currentHeroIndex === index ? 1 : 0 }">
+        </div>
+        <div class="absolute inset-0 bg-black/40"></div> <!-- Overlay -->
+      </div>
+
+      <!-- Hero Content -->
+      <div class="relative z-10 text-center text-white px-4 max-w-3xl mx-auto animate-fade-in-up">
+        <h1 class="text-4xl md:text-6xl font-bold mb-6 tracking-tight leading-tight">
+          Elevate Your Style
+        </h1>
+        <p class="text-lg md:text-xl mb-8 font-light text-gray-100">
+          Discover the latest trends in fashion and lifestyle at unbeatable prices.
+        </p>
+        <NuxtLink to="/products/" class="inline-block bg-white text-black px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-transform hover:scale-105 shadow-xl">
+          Shop Collection
+        </NuxtLink>
+      </div>
+
+      <!-- Slider Dots -->
+      <div class="absolute bottom-8 left-0 right-0 flex justify-center space-x-3 z-10">
+        <button v-for="(_, index) in heroImages" :key="index" 
+                @click="currentHeroIndex = index"
+                class="w-3 h-3 rounded-full transition-all duration-300"
+                :class="currentHeroIndex === index ? 'bg-white scale-110' : 'bg-white/50 hover:bg-white/80'">
         </button>
       </div>
-    </nav>
-  
-    <!-- Mobile Menu -->
-    <ul v-if="menuOpen" class="md:hidden bg-white shadow-md p-4 flex flex-col space-y-4 items-center">
-      <li><NuxtLink to="/navpages/" class="hover:text-gray-500" @click="menuOpen = false">Home</NuxtLink></li>
-      <li><NuxtLink to="/products/" class="hover:text-gray-500" @click="menuOpen = false">Shop</NuxtLink></li>
-      <li><NuxtLink to="/categories/" class="hover:text-gray-500" @click="menuOpen = false">Categories</NuxtLink></li>
-      <li><NuxtLink to="/navpages/contactus" class="hover:text-gray-500" @click="menuOpen = false">Contact Us</NuxtLink></li>
-    </ul>
-      <section class="h-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600 text-white text-center">
-      <h1 class="text-4xl font-bold mb-4">Welcome to our online store</h1>
-      <p class="mb-6">Shop the latest trends at unbeatable prices.</p>
-      <button class="bg-white text-blue-600 px-6 py-2 rounded shadow-md mb-6">Shop Now</button>
     </section>
-      <section class="p-6 text-center">
-    <h2 class="text-2xl font-bold mb-4">Shop by Category</h2>
-    <div class="grid grid-cols-4 md:grid-cols-6 gap-1">
-      <a href="/categories/electronics" class="flex flex-col items-center">
-        <img src="/assets/electronics1.jpg" alt="Electronics" class="w-20 h-20 rounded-2xl object-cover">
-        <span class="mt-2 text-sm font-semibold">Electronics</span>
-      </a>
-      <a href="/categories/kids" class="flex flex-col items-center">
-        <img src="/assets/kidswear.jpg" alt="Kids" class="w-20 h-20 rounded-xl object-cover">
-        <span class="mt-2 text-sm font-semibold">Kids</span>
-      </a>
-      <a href="/categories/men" class="flex flex-col items-center">
-        <img src="/assets/menswear.jpg" alt="Men" class="w-20 h-20 rounded-xl object-cover">
-        <span class="mt-2 text-sm font-semibold">Men</span>
-      </a>
-      <a href="/categories/sports-outdoor" class="flex flex-col items-center">
-        <img src="/assets/sports.jpg" alt="Sports & Outdoor" class="w-20 h-20 rounded-xl object-cover">
-        <span class="mt-2 text-sm font-semibold">Sports & Outdoor</span>
-      </a>
-      <a href="/categories/jewelry-accessories" class="flex flex-col items-center">
-        <img src="/assets/jewellery.jpg" alt="Jewelry & Accessories" class="w-20 h-20 rounded-xl object-cover">
-        <span class="mt-2 text-sm font-semibold text-center">Jewelry & Accessories</span>
-      </a>
-      <a href="" class="flex flex-col items-center">
-        <img src="/assets/homeandliving.jpg" alt="Home & Living" class="w-20 h-20 rounded-xl object-cover">
-        <span class="mt-2 text-sm font-semibold">Home & Living</span>
-      </a>
-    </div>
-  </section>
-  <section class="p-6 text-center">
-    <h2 class="text-2xl font-bold mb-4">Top Selling Products</h2>
-    <div class="relative">
-      <!-- Left Arrow (Visible only on mobile) -->
-      <button 
-        @click="prevSlide" 
-        class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full z-10 block md:hidden"
-      >
-        ◀
-      </button>
 
-      <div class="overflow-hidden relative">
-        <div 
-          ref="slider"
-          class="flex space-x-4 transition-transform duration-300 ease-in-out"
-        >
-          <div 
-            v-for="product in topSellingProducts" 
-            :key="product.id" 
-            class="p-4 shadow-lg rounded-lg bg-white min-w-[80%] sm:min-w-[200px] snap-center"
-          >
-            <img :src="product.image" :alt="product.title" class="w-full h-40 object-cover" />
-            <h3 class="mt-2 text-sm font-bold">{{ product.title }}</h3>
-            <p class="text-red-500 font-semibold text-lg">${{ product.price }}</p>
-            <button class="mt-2 px-4 py-1 text-white bg-blue-500 rounded hover:bg-blue-600">
-              Add to Cart
-            </button>
+    <!-- Categories Section -->
+    <section class="py-16 bg-gray-50">
+      <div class="container mx-auto px-6">
+        <h2 class="text-2xl md:text-3xl font-bold mb-10 text-center uppercase tracking-wide">Shop by Category</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+          <NuxtLink v-for="cat in categoriesList" :key="cat.name" :to="cat.link" class="group flex flex-col items-center">
+            <div class="w-32 h-32 rounded-full overflow-hidden shadow-md mb-4 border-2 border-transparent group-hover:border-black transition-all">
+              <img :src="cat.image" :alt="cat.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+            </div>
+            <span class="text-sm font-medium group-hover:text-blue-600 transition-colors">{{ cat.name }}</span>
+          </NuxtLink>
+        </div>
+      </div>
+    </section>
+
+    <!-- Top Selling Section -->
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-6">
+        <div class="flex justify-between items-end mb-10">
+          <h2 class="text-2xl md:text-3xl font-bold uppercase tracking-wide">Trending Now</h2>
+          <NuxtLink to="/products/" class="text-sm font-medium border-b border-black pb-1 hover:text-gray-600 transition-colors">View All</NuxtLink>
+        </div>
+
+        <div class="relative group">
+          <div v-if="!topSellingProducts.length" class="text-center py-10 text-gray-400">Loading products...</div>
+          
+          <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+             <div v-for="product in topSellingProducts" :key="product.id" 
+                  class="bg-white rounded-xl shadow-sm hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100 flex flex-col h-full group/card">
+               <div class="relative pt-[100%] bg-white overflow-hidden p-4">
+                  <img :src="product.image" :alt="product.title" class="absolute inset-0 w-full h-full object-contain p-4 group-hover/card:scale-105 transition-transform duration-500">
+               </div>
+               <div class="p-4 flex flex-col flex-1">
+                 <h3 class="text-sm font-medium text-gray-900 line-clamp-2 mb-2 min-h-[40px]">{{ product.title }}</h3>
+                 <div class="flex justify-between items-center mt-auto">
+                   <p class="text-lg font-bold text-gray-900">${{ product.price }}</p>
+                   <button @click="handleAddToCart(product)" 
+                           class="bg-black text-white p-2 rounded-full hover:bg-gray-800 transition-colors active:scale-95">
+                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                   </button>
+                 </div>
+               </div>
+             </div>
           </div>
         </div>
       </div>
+    </section>
 
-      <!-- Right Arrow (Visible only on mobile) -->
-      <button 
-        @click="nextSlide" 
-        class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full z-10 block md:hidden"
-      >
-        ▶
-      </button>
-    </div>
-    <p v-if="!topSellingProducts.length" class="text-gray-500">Loading products...</p>
-</section>
-
-    <section class="p-6 md:p-20 lg:p-40 bg-gray-200 text-center">
-    <h2 class="text-2xl font-bold">Stay Updated</h2>
-    <p class="text-sm md:text-base">Subscribe for exclusive discounts and new arrivals.</p>
-    <div class="mt-4 flex flex-col sm:flex-row justify-center items-center gap-2">
-      <input 
-        type="email" 
-        placeholder="Enter your email" 
-        class="p-2 rounded border w-full sm:w-auto"
-      />
-      <button class="px-4 py-2 bg-blue-600 text-white rounded w-full sm:w-auto">Subscribe</button>
-    </div>
-  </section>
-  
-      <footer class="bg-white py-10 text-gray-700">
-      <div class="container mx-auto px-6">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div>
-            <h3 class="font-bold mb-4">COMPANY INFO</h3>
-            <ul class="space-y-2 text-sm">
-              <li><NuxtLink to ="" class="hover:underline">About us</NuxtLink></li>
-              <li><NuxtLink to ="" class="hover:underline">Sustainability</NuxtLink></li>
-              <li><NuxtLink to =""class="hover:underline">Fashion Blogger</NuxtLink></li>
-              <li><NuxtLink to ="" class="hover:underline">Supply Chain</NuxtLink></li>
-              <li><NuxtLink to ="" class="hover:underline">Careers</NuxtLink></li>
-              <li><NuxtLink to ="" class="hover:underline">Student Discount</NuxtLink></li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="font-bold mb-4">HELP & SUPPORT</h3>
-            <ul class="space-y-2 text-sm">
-              <li><NuxtLink to ="" class="hover:underline">Returns</NuxtLink></li>
-              <li><NuxtLink to ="" class="hover:underline">Refunds</NuxtLink></li>
-              <li><NuxtLink to ="" class="hover:underline">How to Order</NuxtLink></li>
-              <li><NuxtLink to =""class="hover:underline">How to Track</NuxtLink></li>
-              <li><NuxtLink to ="" class="hover:underline">Size Guide</NuxtLink></li>
-            </ul>
-          </div>
-  
-          <div>
-            <h3 class="font-bold mb-4">CUSTOMER CARE</h3>
-            <ul class="space-y-2 text-sm">
-              <li><NuxtLink to =""class="hover:underline">Contact Us</NuxtLink></li>
-              <li><NuxtLink to =""class="hover:underline">Payment & Tax</NuxtLink></li>
-            </ul>
-          </div>
-          <div>
-            <div class="flex space-x-4 mb-4">
-              <NuxtLink to ="" class="text-xl"><i class="fab fa-facebook"></i></NuxtLink>
-              <NuxtLink to ="" class="text-xl"><i class="fab fa-instagram"></i></NuxtLink>
-              <NuxtLink to ="" class="text-xl"><i class="fab fa-twitter"></i></NuxtLink>
-              <NuxtLink to ="" class="text-xl"><i class="fab fa-youtube"></i></NuxtLink>
-              <NuxtLink to =""class="text-xl"><i class="fab fa-pinterest"></i></NuxtLink>
-              <NuxtLink to =""class="text-xl"><i class="fab fa-snapchat"></i></NuxtLink>
-              <NuxtLink to ="" class="text-xl"><i class="fab fa-linkedin"></i></NuxtLink>
-            </div>
+    <!-- Newsletter -->
+    <section class="py-20 bg-gray-900 text-white relative overflow-hidden">
+      <!-- Decor element -->
+      <div class="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
+      
+      <div class="container mx-auto px-6 text-center relative z-10">
+        <h2 class="text-3xl font-bold mb-4">Unlock Exclusive Deals</h2>
+        <p class="text-gray-400 mb-8 max-w-xl mx-auto">Join our newsletter to receive the latest updates, style tips, and exclusive offers newly available.</p>
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-4 max-w-md mx-auto">
+          <input 
+            type="email" 
+            placeholder="Your email address" 
+            class="px-6 py-3 rounded-full w-full bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50"
+          />
+          <button class="px-8 py-3 bg-white text-black font-bold rounded-full hover:bg-gray-100 transition-colors w-full sm:w-auto">
+            Subscribe
+          </button>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-100 pt-16 pb-8 text-gray-600">
+      <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <h3 class="font-bold text-gray-900 mb-4 tracking-wider text-sm">COMPANY</h3>
+          <ul class="space-y-3 text-sm">
+            <li><a href="#" class="hover:text-black transition-colors">About Us</a></li>
+            <li><a href="#" class="hover:text-black transition-colors">Sustainability</a></li>
+            <li><a href="#" class="hover:text-black transition-colors">Careers</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-bold text-gray-900 mb-4 tracking-wider text-sm">HELP</h3>
+          <ul class="space-y-3 text-sm">
+            <li><a href="#" class="hover:text-black transition-colors">FAQ</a></li>
+            <li><a href="#" class="hover:text-black transition-colors">Shipping & Returns</a></li>
+            <li><a href="#" class="hover:text-black transition-colors">Size Guide</a></li>
+          </ul>
+        </div>
+        <div>
+           <h3 class="font-bold text-gray-900 mb-4 tracking-wider text-sm">CONTACT</h3>
+           <ul class="space-y-3 text-sm">
+             <li>support@onlinestore.com</li>
+             <li>+1 (555) 123-4567</li>
+           </ul>
+        </div>
+        <div>
+          <h3 class="font-bold text-gray-900 mb-4 tracking-wider text-sm">FOLLOW US</h3>
+          <div class="flex space-x-4">
+            <!-- Social Icons placeholder -->
+            <a href="#" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-black hover:text-white transition-all">FB</a>
+            <a href="#" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-black hover:text-white transition-all">IG</a>
+            <a href="#" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-black hover:text-white transition-all">TW</a>
           </div>
         </div>
-        <div class="mt-10 text-center">
-          <h3 class="font-bold mb-2">WE ACCEPT</h3>
-          <div class="flex justify-center space-x-4">
-            <img src="/assets/visa.png" alt="Visa" class="h-6">
-            <img src="/assets/mastercard.png" alt="Mastercard" class="h-6">
-          </div>
-        </div>
-      </div> 
-        <div class="mt-10 text-center text-xs text-gray-500">
-          <p>©2009-2025 Online Store All Rights Reserved</p>
-          <div class="flex justify-center space-x-4 mt-2">
-            <a href="#" class="hover:underline">Privacy Policy</a>
-        </div>
+      </div>
+      <div class="border-t border-gray-100 mt-12 pt-8 text-center text-xs text-gray-400">
+        <p>&copy; 2025 Online Store. All Rights Reserved.</p>
       </div>
     </footer>
-    </div>
-  </template>
-  <script setup>
-  import { ref, onMounted } from 'vue';
-  const menuOpen = ref(false);
-  const topSellingProducts = ref([]);
-  
-  const fetchTopSellingProducts = async () => {
-    try {
-      const response = await fetch('https://fakestoreapi.com/products?limit=5');
-      if (!response.ok) {
-        throw new Error('Failed to fetch products');
-      }
-      topSellingProducts.value = await response.json();
-    } catch (error) {
-      console.error('Error fetching top selling products:', error);
-    }
-  };
-  
-  onMounted(fetchTopSellingProducts);
-  const slider = ref(null);
-  const currentIndex = ref(0);
+  </div>
+</template>
 
-const nextSlide = () => {
-  if (currentIndex.value < topSellingProducts.value.length - 1) {
-    currentIndex.value++;
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue';
+
+const { addToCart: addToCartAction, cart } = useCart();
+const menuOpen = ref(false);
+const topSellingProducts = ref([]);
+
+// Hero Logic
+const currentHeroIndex = ref(0);
+const heroImages = [
+  'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=2070&auto=format&fit=crop'
+];
+
+let sliderInterval;
+
+const startSlider = () => {
+  sliderInterval = setInterval(() => {
+    currentHeroIndex.value = (currentHeroIndex.value + 1) % heroImages.length;
+  }, 5000); // Change every 5 seconds
+};
+
+onMounted(() => {
+  fetchTopSellingProducts();
+  startSlider();
+  const { initCart } = useCart();
+  initCart();
+});
+
+onUnmounted(() => {
+  clearInterval(sliderInterval);
+});
+
+// Category Data (Static for now to match UI)
+const categoriesList = [
+  { name: 'Electronics', image: '/assets/electronics1.jpg', link: '/categories/electronics' },
+  { name: 'Kids', image: '/assets/kidswear.jpg', link: '/categories/kids' },
+  { name: 'Men', image: '/assets/menswear.jpg', link: '/categories/men' },
+  { name: 'Sports', image: '/assets/sports.jpg', link: '/categories/sports-outdoor' },
+  { name: 'Jewelry', image: '/assets/jewellery.jpg', link: '/categories/jewelry-accessories' },
+  { name: 'Home', image: '/assets/homeandliving.jpg', link: '/categories/' },
+];
+
+const fetchTopSellingProducts = async () => {
+  try {
+    const response = await fetch('https://fakestoreapi.com/products?limit=10'); // Fetch more for the grid
+    if (!response.ok) throw new Error('Failed to fetch');
+    topSellingProducts.value = await response.json();
+  } catch (error) {
+    console.error('Error fetching products:', error);
   }
 };
 
-const prevSlide = () => {
-  if (currentIndex.value > 0) {
-    currentIndex.value--;
-  }
+const handleAddToCart = (product) => {
+  addToCartAction(product);
+  alert(`${product.title} added to cart!`); // Simple feedback
 };
-  </script>
-  
-  <style>
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
+</script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  </style>
-  
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 1s ease-out forwards;
+}
+</style>
