@@ -1,7 +1,8 @@
 export const useCart = () => {
     const cart = useState('cart', () => []);
+    const { user } = useAuth();
+    const router = useRouter();
 
-    // Load cart from localStorage on init (client-side only)
     const initCart = () => {
         if (import.meta.client) {
             const savedCart = localStorage.getItem('cart');
@@ -12,36 +13,69 @@ export const useCart = () => {
     };
 
     const addToCart = (product) => {
-        cart.value.push(product);
-        if (import.meta.client) {
-            localStorage.setItem('cart', JSON.stringify(cart.value));
+        if (!user.value) {
+            alert("Please log in to add items to your cart.");
+            router.push('/login');
+            return;
+        }
+
+        const existingItem = cart.value.find(item => item.product.id === product.id);
+        if (existingItem) {
+            existingItem.quantity++;
+        } else {
+            cart.value.push({ product, quantity: 1 });
+        }
+
+        saveCart();
+    };
+
+    const updateQuantity = (productId, change) => {
+        const item = cart.value.find(i => i.product.id === productId);
+        if (item) {
+            item.quantity += change;
+            if (item.quantity <= 0) {
+                removeFromCart(productId);
+            } else {
+                saveCart();
+            }
         }
     };
 
-    const removeFromCart = (index) => {
-        cart.value.splice(index, 1);
-        if (import.meta.client) {
-            localStorage.setItem('cart', JSON.stringify(cart.value));
+    const removeFromCart = (productId) => {
+        const index = cart.value.findIndex(i => i.product.id === productId);
+        if (index > -1) {
+            cart.value.splice(index, 1);
+            saveCart();
         }
     };
 
     const getCartTotal = () => {
-        return cart.value.reduce((total, item) => total + item.price, 0).toFixed(2);
+        return cart.value.reduce((total, item) => total + (item.product.price * item.quantity), 0).toFixed(2);
+    };
+
+    const getCartCount = computed(() => {
+        return cart.value.reduce((count, item) => count + item.quantity, 0);
+    });
+
+    const saveCart = () => {
+        if (import.meta.client) {
+            localStorage.setItem('cart', JSON.stringify(cart.value));
+        }
     };
 
     const clearCart = () => {
         cart.value = [];
-        if (import.meta.client) {
-            localStorage.removeItem('cart');
-        }
+        saveCart();
     };
 
     return {
         cart,
         initCart,
         addToCart,
+        updateQuantity,
         removeFromCart,
         getCartTotal,
+        getCartCount,
         clearCart
     };
 };

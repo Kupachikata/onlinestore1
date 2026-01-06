@@ -9,7 +9,7 @@
 
         <!-- Desktop Menu -->
         <ul class="hidden md:flex space-x-8 text-sm font-medium tracking-wide uppercase text-gray-600">
-          <li><NuxtLink to="/navpages/" class="hover:text-black transition-colors">Home</NuxtLink></li>
+          <li><NuxtLink to="/" class="hover:text-black transition-colors">Home</NuxtLink></li>
           <li><NuxtLink to="/products/" class="hover:text-black transition-colors">Shop</NuxtLink></li>
           <li><NuxtLink to="/categories/" class="hover:text-black transition-colors">Categories</NuxtLink></li>
           <li><NuxtLink to="/navpages/contactus" class="hover:text-black transition-colors">Contact</NuxtLink></li>
@@ -36,7 +36,7 @@
       <!-- Mobile Menu -->
       <transition name="fade">
         <ul v-if="menuOpen" class="md:hidden bg-white border-t border-gray-100 p-4 flex flex-col space-y-4 shadow-lg absolute w-full left-0">
-          <li><NuxtLink to="/navpages/" class="block py-2 px-4 hover:bg-gray-50 rounded" @click="menuOpen = false">Home</NuxtLink></li>
+          <li><NuxtLink to="/" class="block py-2 px-4 hover:bg-gray-50 rounded" @click="menuOpen = false">Home</NuxtLink></li>
           <li><NuxtLink to="/products/" class="block py-2 px-4 hover:bg-gray-50 rounded" @click="menuOpen = false">Shop</NuxtLink></li>
           <li><NuxtLink to="/categories/" class="block py-2 px-4 hover:bg-gray-50 rounded" @click="menuOpen = false">Categories</NuxtLink></li>
           <li><NuxtLink to="/navpages/contactus" class="block py-2 px-4 hover:bg-gray-50 rounded" @click="menuOpen = false">Contact Us</NuxtLink></li>
@@ -83,11 +83,13 @@
       <div class="container mx-auto px-6">
         <h2 class="text-2xl md:text-3xl font-bold mb-10 text-center uppercase tracking-wide">Shop by Category</h2>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-          <NuxtLink v-for="cat in categoriesList" :key="cat.name" :to="cat.link" class="group flex flex-col items-center">
-            <div class="w-32 h-32 rounded-full overflow-hidden shadow-md mb-4 border-2 border-transparent group-hover:border-black transition-all">
-              <img :src="cat.image" :alt="cat.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+          <NuxtLink v-for="cat in categoriesList" :key="cat.name" :to="cat.path" class="group flex flex-col items-center">
+            <div class="w-32 h-32 rounded-full overflow-hidden shadow-md mb-4 border-2 border-transparent group-hover:border-black transition-all bg-white p-1">
+              <div class="w-full h-full rounded-full overflow-hidden">
+                <img :src="cat.image" :alt="cat.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+              </div>
             </div>
-            <span class="text-sm font-medium group-hover:text-blue-600 transition-colors">{{ cat.name }}</span>
+            <span class="text-sm font-medium group-hover:text-blue-600 transition-colors uppercase tracking-wider">{{ cat.name }}</span>
           </NuxtLink>
         </div>
       </div>
@@ -224,14 +226,20 @@ onUnmounted(() => {
   clearInterval(sliderInterval);
 });
 
-// Category Data (Static for now to match UI)
+// Category Data (Matched with /pages/categories/index.vue)
 const categoriesList = [
-  { name: 'Electronics', image: '/assets/electronics1.jpg', link: '/categories/electronics' },
-  { name: 'Kids', image: '/assets/kidswear.jpg', link: '/categories/kids' },
-  { name: 'Men', image: '/assets/menswear.jpg', link: '/categories/men' },
-  { name: 'Sports', image: '/assets/sports.jpg', link: '/categories/sports-outdoor' },
-  { name: 'Jewelry', image: '/assets/jewellery.jpg', link: '/categories/jewelry-accessories' },
-  { name: 'Home', image: '/assets/homeandliving.jpg', link: '/categories/' },
+  { name: 'Electronics', image: 'https://images.unsplash.com/photo-1498049860654-af1a5c5668ba?auto=format&fit=crop&q=80&w=300&h=300', path: '/categories/electronics' },
+  { name: 'Jewelry', image: 'https://images.unsplash.com/photo-1515562141207-7a88fb05220c?auto=format&fit=crop&q=80&w=300&h=300', path: '/categories/jewelry-accessories' },
+  { name: 'Men', image: 'https://images.unsplash.com/photo-1617137346081-afc2447d7475?auto=format&fit=crop&q=80&w=300&h=300', path: '/categories/men' },
+  { name: 'Women', image: 'https://images.unsplash.com/photo-1618244972963-dbee124158e0?auto=format&fit=crop&q=80&w=300&h=300', path: '/categories/women' },
+  { name: 'Kids', image: 'https://images.unsplash.com/photo-1514090458221-65bb69cf63e6?auto=format&fit=crop&q=80&w=300&h=300', path: '/categories/kids' },
+  { name: 'Sports', image: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&q=80&w=300&h=300', path: '/categories/sports-outdoor' },
+  { name: 'Home', image: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&q=80&w=300&h=300', path: '/categories/' },
+  { name: 'Shoes', image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&q=80&w=300&h=300', path: '/categories/' },
+  { name: 'Beauty', image: 'https://images.unsplash.com/photo-1596462502278-27bfdd403348?auto=format&fit=crop&q=80&w=300&h=300', path: '/categories/' },
+  { name: 'Bags', image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=80&w=300&h=300', path: '/categories/' },
+  { name: 'Watches', image: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&q=80&w=300&h=300', path: '/categories/' },
+  { name: 'Accessories', image: 'https://images.unsplash.com/photo-1576053139778-7e32f2ae3cfd?auto=format&fit=crop&q=80&w=300&h=300', path: '/categories/' },
 ];
 
 const fetchTopSellingProducts = async () => {
@@ -246,7 +254,7 @@ const fetchTopSellingProducts = async () => {
 
 const handleAddToCart = (product) => {
   addToCartAction(product);
-  alert(`${product.title} added to cart!`); // Simple feedback
+  // Remove simple alert, maybe rely on a toast system if I built one, or just silent add for now/use cart count update
 };
 </script>
 
